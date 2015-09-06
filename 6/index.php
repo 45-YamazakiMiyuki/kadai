@@ -23,12 +23,23 @@
         </h2>
         <article class="news-detail">
             <dl class="clearfix">
-                <dt class="news-date">2015.07.12</dt>
-                <dd class="news-description">初日開講しました！</dd>
-                <dt class="news-date">2015.06.12</dt>
-                <dd class="news-description">初めてのチーズハッカソンを開催しました！</dd>
-                <dt class="news-date">2015.04.11</dt>
-                <dd class="news-description">トーキョーチーズFesを開催いたしました！</dd>
+            <?php
+                $pdo = new PDO("mysql:host=localhost;dbname=cs_academy;charset=utf8", "root", "");
+                $sql = "SELECT news_id,CAST(create_date AS DATE) AS create_date,SUBSTRING(news_title,1,10) AS news_title FROM news ORDER BY create_date DESC LIMIT 5";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute();
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach($results as $row) {
+                echo "<dt class='news-date'>";
+                echo $row["create_date"];
+                echo "</dt><dd class='news-description'><a href='news.php?news_id=".$row["news_id"]."'>";
+                //echo "</dt>";
+                //echo "<dd class='news-description'><a href='news.php?news_id=1>";
+                echo $row["news_title"];
+                echo "</a></dd>";
+            }
+            $pdo = null;
+            ?>
             </dl>
             <p class="view-detail text-right"><a href="#">ニュース一覧を見る</a></p>
         </article>

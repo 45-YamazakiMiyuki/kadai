@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-    <meta charset="UTF-8">
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+<?php include("header.php"); ?>
     <header class="header">
         <div class="inner clearfix">
             <h1 class="site-title"><a href="#"><img src="img/logo.png" alt="Cheese Academy Tokyo"></a></h1>
@@ -22,14 +12,25 @@
     </header>
     
     <section class="news contents-box">
-        <h2 class="section-title text-center">
-            <span class="section-title__yellow">News</span>
-            <span class="section-title-ja text-center">日付</span>
-        </h2>
-        <article class="news-detail">
-            <dl class="clearfix">
-                <dd class="news-title">ニュースタイトル</dd>
-                <dd>ニュース詳細：あいうえおかきくけこさしすせそたちつてと</dd>
+        <?php
+        $news_id = $_GET["news_id"];
+        $pdo = new PDO("mysql:host=localhost;dbname=cs_academy;charset=utf8", "root", "");
+        $sql = "SELECT CAST(create_date AS DATE) AS create_date,news_title,news_detail FROM news WHERE news_id =".$news_id;
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach($results as $row) {
+            echo "<h2 class='section-title text-center'>";
+            echo "<span class='section-title__yellow'>News</span>";
+            echo "<span class='section-title-ja text-center'>".$row["create_date"]."</span>";
+            echo "</h2>";
+            echo "<article class='news-detail'>";
+            echo "<dl class='clearfix'>";
+            echo "<dd class='news-title'>".$row["news_title"]."</dd>";
+            echo "<dd>ニュース詳細：".$row["news_detail"]."</dd>";
+        }
+        $pdo = null;
+        ?>
             </dl>
             
         </article>
@@ -51,5 +52,4 @@
     </section>
     <!--end #information-->
 <p class="btn-pageTop"><a href="#"><img src="img/btn-pagetop.png" alt=""></a></p>
-</body>
-</html>
+<?php include("footer.php"); ?>
