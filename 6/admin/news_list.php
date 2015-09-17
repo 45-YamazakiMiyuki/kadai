@@ -1,7 +1,17 @@
 <?php
+if( array_key_exists( 'search',$_GET ) ) {
+    //パラメータ有り
+   $search = $_GET["search"];
+} else {
+   $search = NULL;
+}
 $pdo = new PDO("mysql:host=localhost;dbname=cs_academy;charset=utf8", "root", "");
 //$sql = "SELECT news_id,news_title,CASE show_flg WHEN "1" THEN "表示する" ELSE "表示しない" END AS show_flg FROM news ORDER BY create_date DESC";
-$sql = "SELECT news_id,news_title, show_flg FROM news ORDER BY create_date DESC";
+if (is_null($search) ) {
+    $sql = "SELECT news_id,news_title, show_flg FROM news ORDER BY create_date DESC";
+} else {
+    $sql = "SELECT news_id,news_title, show_flg FROM news WHERE news_title LIKE '%" .$search ."%' OR news_detail LIKE '%" .$search ."%' ORDER BY create_date DESC";
+}
 //var_dump($sql);
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
@@ -32,6 +42,10 @@ $pdo = null;
 <head>
 </head>
 <body>
+<form action="news_list.php" method="get">
+	部分一致検索（タイトル/本文） <input type="text" name="search" />
+	<input type="submit" value="検索" />
+</form>
 <?php echo $view ?>
 <hr>
 <a href="index.php">index.php</a> 
